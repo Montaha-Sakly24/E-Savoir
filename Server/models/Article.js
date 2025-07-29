@@ -1,6 +1,15 @@
 import mongoose from "mongoose";
 
 const articleSchema = new mongoose.Schema({
+  numericId: {
+        type: Number,
+        unique: true,
+        required: true,
+        validate: {
+            validator: Number.isInteger,
+            message: '{VALUE} is not an integer value',
+        } 
+    },
   title: { 
     type: String, 
     required: true,

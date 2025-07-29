@@ -42,11 +42,11 @@ export const login = async (req, res) => {
         const token = jwt.sign({id: user._id, role: user.role}, process.env.JWT_SECRET, {expiresIn: "5h"});  
 
         let redirectPath = '';
-        switch(user.role) {
-            case ROLES.ADMIN:
+        switch(user.role.toLowerCase()) {
+            case 'admin':
                 redirectPath = '/admin';
                 break;
-            case ROLES.MEMBER:
+            case 'member':
                 redirectPath = '/member';
                 break;
             default:

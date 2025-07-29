@@ -1,13 +1,12 @@
 import React from 'react';
-import Navbar from '../../Components/Navbar.jsx';
-import Footer from '../../Components/Footer.jsx';
+import Navbar from '../../Components/UI/Navbar.jsx';
+import Footer from '../../Components/UI/Footer.jsx';
 import CoverImage from '../../assets/cover-i.png';
-import MainContent from '../../Components/MainContent.jsx';
-import Latest from '../../Components/Latest.jsx';
+import MainContent from '../../Components/UI/MainContent.jsx';
+import Latest from '../../Components/UI/Latest.jsx';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
-
 
 const Home = () => {
   return (

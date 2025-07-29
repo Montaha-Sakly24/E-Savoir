@@ -2,17 +2,19 @@ import * as React from 'react';
 import { alpha, styled } from '@mui/material/styles';
 import {
   AppBar, Toolbar, Box, Button, IconButton, Container,
-  Divider, MenuItem, Drawer, Menu, Typography
+  Divider, MenuItem, Drawer, Menu
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import Badge from '@mui/material/Badge';
+import EditIcon from '@mui/icons-material/Edit';
 
-import ColorModeIconDropdown from './ColorModeIconDropdown';
-import Sitemark from './SitemarkIcon';
-import { useAuth } from '../context/ContextProvider';
+import { useAuth } from '../../context/ContextProvider';
 import { Link, useNavigate } from 'react-router-dom';
-import Logo from '../assets/Logo.png';
+import Logo from '../../assets/Logo.png';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -60,18 +62,31 @@ const Navbar = () => {
     >
       <Container maxWidth="lg">
         <StyledToolbar variant="dense" disableGutters>
-          {/* Logo + liens */}
+         
           <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
             <img src={Logo} alt="logo" className="w-8 h-8" />
             <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 2, ml: 3 }}>
-              <Button component={Link} to="/" color="info" size="small">Home</Button>
-              <Button color="info" size="small">Features</Button>
-              <Button color="info" size="small">Highlights</Button>
-              <Button color="info" size="small">FAQ</Button>
+              {isAuthenticated ? (
+                <Button component={Link} to={`/member/home`} color="info" size="small">
+                  Home
+                </Button>
+              ) : (
+                <Button component={Link} to="/" color="info" size="small">Home</Button>
+              )}
+              {isAuthenticated ? (
+                <Button component={Link} to={`/member/my-articles`} color="info" size="small">
+                  My Articles
+                </Button>
+              ) : (
+                <Button color="info" size="small">About</Button>
+              )}
+              {!isAuthenticated && (
+                <Button color="info" size="small">Contact</Button>
+              )}
             </Box>
           </Box>
 
-          {/* Auth actions */}
+      
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1 }}>
             {!isAuthenticated ? (
               <>
@@ -84,12 +99,26 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Typography variant="body2" color="text.secondary" sx={{ mr: 1 }}>
-                  Hello, {user.firstname}
-                </Typography>
-                <IconButton color="inherit" onClick={handleMenuOpen}>
-                  <AccountCircle />
-                </IconButton>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<EditIcon />}
+                component={Link}
+                to={`/${user.role}/write`}
+                sx={{ mr: 1 }}
+              >
+                Write
+              </Button>
+
+                <IconButton color="inherit" sx={{ mr: 1 }}>
+                <Badge color="error" variant="dot">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+
+              <IconButton color="inherit" onClick={handleMenuOpen}>
+                <AccountCircle />
+              </IconButton>
                 <Menu
                   anchorEl={menuAnchor}
                   open={Boolean(menuAnchor)}
@@ -100,12 +129,10 @@ const Navbar = () => {
                 </Menu>
               </>
             )}
-            <ColorModeIconDropdown />
           </Box>
 
           {/* Mobile menu icon */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
-            <ColorModeIconDropdown size="medium" />
             <IconButton aria-label="menu" onClick={toggleDrawer(true)}>
               <MenuIcon />
             </IconButton>
@@ -140,12 +167,28 @@ const Navbar = () => {
                 </>
               ) : (
                 <>
-                  <MenuItem component={Link} to={`/${user.role}/profile`}>
-                    Profile
-                  </MenuItem>
-                  <MenuItem onClick={handleLogout}>
-                    Logout
-                  </MenuItem>
+                  <IconButton component={Link} to="/write" color="primary" title="Write new article">
+                    <EditNoteIcon />
+                  </IconButton>
+
+                  {/* Notifications */}
+                  <IconButton color="inherit" title="Notifications">
+                    <NotificationsIcon />
+                  </IconButton>
+
+                  {/* Profil */}
+                  <IconButton color="inherit" onClick={handleMenuOpen}>
+                    <AccountCircle />
+                  </IconButton>
+
+                  <Menu
+                    anchorEl={menuAnchor}
+                    open={Boolean(menuAnchor)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem component={Link} to={`/${user.role}/profile`} onClick={handleMenuClose}>Profile</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  </Menu>
                 </>
               )}
             </Box>

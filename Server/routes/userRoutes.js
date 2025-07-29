@@ -13,8 +13,8 @@ router.delete("/me", authenticate, deleteMyProfile);
 
 
 //member account management
-router.get("/:id", authenticate, getOne);
 router.get("/list", authenticate, requireAdmin, getAllMembers);
+router.get("/:id", authenticate, getOne);
 router.delete("/:id", authenticate, requireAdmin, deleteMember);
 
 export default router;

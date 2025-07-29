@@ -6,8 +6,9 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-import { PORT } from './config.js';
-import connectToMongoDB from './config.js';
+import { PORT } from './utils/config.js';
+import connectToMongoDB from './utils/config.js';
+import { createAdminAccount } from './utils/createAdminAccount.js';
 
 import authRouter from './routes/authRoutes.js';
 import userRouter from './routes/userRoutes.js';
@@ -17,6 +18,7 @@ import articleRouter from './routes/articleRoutes.js';
 const app = express ();
 app.use(express.json());
 app.use(cors());
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +30,12 @@ app.use('/api/categories', categoryRouter);
 app.use('/api/articles', articleRouter);
 
 
-app.listen(PORT || 5000, ()=> {
-    connectToMongoDB();
-    console.log(`App is listening to port : ${PORT || 5000}`);
+connectToMongoDB().then(async () => {
+  await createAdminAccount();
+
+  app.listen(PORT || 5000, () => {
+       console.log(`App is listening to port : ${PORT || 5000}`);
+    });
+}).catch((err) => {
+     console.error(err.message);
 });

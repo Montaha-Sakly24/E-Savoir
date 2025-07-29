@@ -7,7 +7,9 @@ const ProtectedRoute = ({ role }) => {
   if (loading) return <div> Loading...</div>;
 
   if (!user) return <Navigate to="/login" />;
-  if (role && user.role !== role) return <Navigate to="/" />;
+  console.log(user);
+
+if (role && user.role.toLowerCase() !== role.toLowerCase()) return <Navigate to="/" />;
 
   return <Outlet />;
 };

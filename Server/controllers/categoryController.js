@@ -9,7 +9,10 @@ export const createCategory = async (req, res) => {
             return res.status(400).json({ success: false, message: "Cette catégorie existe déjà." });
         }
 
-        const newCategory = new Category({ title, description });
+        const lastCategory = await Category.findOne().sort({ numericId: -1 });
+        const nextId = lastCategory ? lastCategory.numericId + 1 : 1;
+
+        const newCategory = new Category({ title, description,  numericId: nextId });
 
         await newCategory.save();
 
