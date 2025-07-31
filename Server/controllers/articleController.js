@@ -41,7 +41,6 @@ export const createArticle = async (req, res) => {
     }
 };
 
-
 export const submitArticle = async (req, res) => {
   try {
     const article = await Article.findOne({ _id: req.params.id });

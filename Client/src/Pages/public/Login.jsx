@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/ContextProvider.jsx';
-import { TextField, Button, Typography, Box, Paper, InputAdornment, IconButton, CircularProgress, Alert } from '@mui/material';
+import { TextField, Button, Typography, Box, Paper, InputAdornment, IconButton, CircularProgress, Alert, Snackbar } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import logo from '../../assets/Logo.png'; 
 
@@ -12,29 +12,77 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState({});
+    const [errors, setErrors] = useState({});
     const {login} = useAuth();
+    const [snackbar, setSnackbar] = useState({
+      open: false,
+      message: '',
+      severity: 'success'
+    });
 
     const navigate = useNavigate();
 
+    const showSnackbar = (message, severity = 'success') => {
+      setSnackbar({ open: true, message, severity });
+    };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError(null);
-        try {
-            const res = await axios.post("http://localhost:5000/api/auth/login", {email, password});
-            if (res.data.success){
-                login(res.data.user);
-                localStorage.setItem("user", JSON.stringify(res.data.user));
-                localStorage.setItem("token", res.data.token);
-                navigate(res.data.redirectTo);           
-               }
-            
-        } catch (error) {
-            console.log(error);    
-        }
+    const handleCloseSnackbar = () => {
+      setSnackbar({ ...snackbar, open: false });
+    };
+
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    setError(null);
+
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[\w.-]+@gmail\.com$/.test(email)) {
+      newErrors.email = 'Email must be a valid gmail address (e.g. example@gmail.com)';
     }
+
+    if (!password.trim()) {
+      newErrors.password = 'Password is required';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+
+      if (res.data.success) {
+        login(res.data.user);
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        localStorage.setItem("token", res.data.token);
+        showSnackbar('Login successfully!');
+
+        setTimeout(() => {
+          navigate(res.data.redirectTo);
+        }, 800);
+      }
+    } catch (error) {
+      setLoading(false);
+      const message = error?.response?.data?.message;
+
+      if (message === "User not exist") {
+        setErrors({ email: "This email is not registered." });
+      } else if (message === "Invalid credentials") {
+        setErrors({ password: "Incorrect password." });
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    }
+  };
+
+
 
     return (
       <Box
@@ -47,6 +95,16 @@ const Login = () => {
             px: 2,
           }}
         >
+          <Snackbar
+            open={snackbar.open}
+            autoHideDuration={3000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          >
+            <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} variant="filled">
+              {snackbar.message}
+            </Alert>
+          </Snackbar>
           <Box
             sx={{
               width: '40%',
@@ -101,16 +159,9 @@ const Login = () => {
               </Typography>
             </Box>
 
-            {error && (
-              <Alert severity="error" sx={{ mb: 3 }}>
-                {error}
-              </Alert>
-            )}
-
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
-                required
                 fullWidth
                 id="email"
                 label="Email Address"
@@ -118,13 +169,17 @@ const Login = () => {
                 autoComplete="email"
                 autoFocus
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setErrors((prev) => ({ ...prev, email: '' }));
+                }}
+                error={Boolean(errors.email)}
+                helperText={errors.email}
                 sx={{ mb: 2 }}
               />
 
               <TextField
                 margin="normal"
-                required
                 fullWidth
                 name="password"
                 label="Password"
@@ -132,7 +187,12 @@ const Login = () => {
                 id="password"
                 autoComplete="current-password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setErrors((prev) => ({ ...prev, password: '' }));
+                }}
+                error={Boolean(errors.password)}
+                helperText={errors.password}
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">

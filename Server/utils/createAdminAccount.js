@@ -16,6 +16,10 @@ export const createAdminAccount = async () => {
       lastname: '1',
       email: 'admin@gmail.com',
       password: hashedPassword,
+      address:'Monastir',
+      education: 'mch qari',
+      work: 'admin',
+      numericId: '0',
       role: ROLES.ADMIN,
     });
 

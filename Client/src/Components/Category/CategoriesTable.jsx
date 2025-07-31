@@ -210,7 +210,7 @@ export default function EnhancedTable({ categories, onRead, onEdit, onDelete }) 
                       </TableCell>
 
                       <TableCell align="right">
-                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }} onClick={(e) => e.stopPropagation()}>
+                        <Box sx={{ display: 'flex', gap: 1 }} onClick={(e) => e.stopPropagation()}>
                           <Tooltip title="View">
                             <IconButton onClick={() => onRead(row)} sx={{ color: '#1976d2' }}>
                               <FaEye size={16} />

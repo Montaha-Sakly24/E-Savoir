@@ -24,9 +24,9 @@ function getComparator(order, orderBy) {
 function EnhancedTableHead({ onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort }) {
   const headCells = [
     { id: "numericId", label: "#" },
-    { id: "firstname", label: "First Name" },
-    { id: "lastname", label: "Last Name" },
-    { id: "createdAt", label: "Created On" },
+    { id: "fullname", label: "Full Name" },
+    { id: "email", label: "Email Address" },
+    { id: "createdAt", label: "Joined At" },
     { id: "actions", label: "Actions" },
   ];
 
@@ -199,14 +199,15 @@ export default function EnhancedTable({ members, onRead, onDelete }) {
                       </TableCell>
 
                       <TableCell>{ row.numericId }</TableCell>
-                      <TableCell sx={{ fontWeight: 500 }}>{row.firstname}</TableCell>
-                      <TableCell sx={{ fontWeight: 500 }}>{row.lastname}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>{row.firstname} {row.lastname}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>{row.email}</TableCell>
+
                       <TableCell>
                         {new Date(row.createdAt).toLocaleDateString()}
                       </TableCell>
 
                       <TableCell align="right">
-                        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }} onClick={(e) => e.stopPropagation()}>
+                        <Box sx={{ display: 'flex', gap: 1 }} onClick={(e) => e.stopPropagation()}>
                           <Tooltip title="View">
                             <IconButton onClick={() => onRead(row)} sx={{ color: '#1976d2' }}>
                               <FaEye size={16} />

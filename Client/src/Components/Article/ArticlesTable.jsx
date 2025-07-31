@@ -229,7 +229,7 @@ export default function EnhancedTable({ articles, onRead, onEdit, onPublish, onA
                       </TableCell>
 
                       <TableCell>{row.numericId}</TableCell>
-                      <TableCell sx={{ fontWeight: 500 }}>{row.title}</TableCell>
+                      <TableCell sx={{ fontWeight: 500 }}>{row.title.length > 25 ? `${row.title.slice(0, 30)}...` : row.title}</TableCell>
                       <TableCell>{row.categoryId?.title}</TableCell>
 
                       {role === "admin" && (
@@ -251,7 +251,7 @@ export default function EnhancedTable({ articles, onRead, onEdit, onPublish, onA
 
                       <TableCell align="right">
                         <Box
-                          sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}
+                          sx={{ display: 'flex', gap: 1 }}
                           onClick={(e) => e.stopPropagation()}
                         >
                           {role === "admin" && (

@@ -4,11 +4,12 @@ import Container from '@mui/material/Container';
 
 const Home = () => {
   return (
-    <div>
+    <div >
       <Container
+      
         maxWidth="lg"
         component="main"
-        sx={{ display: 'flex', flexDirection: 'column', my: 16, gap: 4 }}
+        sx={{ display: 'flex', flexDirection: 'column', mb: 16, gap: 4 }}
       >
         <MainContent />
         

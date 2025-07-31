@@ -5,7 +5,7 @@ import Home from '../Pages/member/Home';
 import MyArticles from '../Pages/member/MyArticles';
 import ArticleCreationForm from '../Components/Article/ArticleCreationForm';
 import ArticleDetailsPage from '../Components/Article/ArticleDetailsPage';
-import Profile from '../Pages/member/Profile';
+import Profile from '../Pages/public/Profile';
 import Notification from '../Pages/member/Notifications';
 
 

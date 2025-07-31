@@ -1,5 +1,6 @@
 import {User, ROLES} from "../models/User.js";
-
+import Article from "../models/Article.js";
+import bcrypt from 'bcrypt';
 
 //profile management
 
@@ -21,6 +22,7 @@ export const getMyProfile = async (req, res) => {
 
 export const updateMyProfile = async (req, res) => {
     try {
+        
         const updateProfile = await User.findByIdAndUpdate(req.user.id, req.body, { new: true, runValidators: true });
 
         if (!updateProfile) {
@@ -34,13 +36,43 @@ export const updateMyProfile = async (req, res) => {
     }
 }
 
+export const changePassword = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ success: false, message: "Current password is incorrect" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+
+    await user.save();
+
+    return res.status(200).json({ success: true, message: "Password updated successfully" });
+
+  } catch (error) {
+    console.error("Change password error:", error);
+    return res.status(500).json({ success: false, message: "Error changing password" });
+  }
+};
+
 export const deleteMyProfile = async (req, res) => {
     try {
-        const deleteProfile = await User.findByIdAndDelete(req.user.id);
+        const userId = req.user._id;
+        const deleteProfile = await User.findByIdAndDelete(userId);
 
         if (!deleteProfile) {
             return res.status(404).json({ success: false, message: "Profile not found" });
         }
+        await Article.deleteMany({ userId: userId });
 
         return res.status(200).json({success:true, deleteProfile});
 
@@ -89,8 +121,9 @@ export const deleteMember = async (req, res) => {
         if (!deleteMember) {
             return res.status(404).json({ success: false, message: "Member not found" });
         }
+        await Article.deleteMany({ userId: id });
 
-        return res.status(200).json({success:true, deleteMember});
+        return res.status(200).json({success:true, message: "Member and related articles deleted successfully", deleteMember});
 
     } catch (error) {
         return res.status(500).json({success:false, message:"Error in deleting member "});

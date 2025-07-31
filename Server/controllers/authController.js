@@ -4,16 +4,18 @@ import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
   try {
-        const {firstname,lastname, email, password} = req.body;
+        const {firstname,lastname, email, password, education, work, address } = req.body;
         const user = await User.findOne ({email});
         if (user){
             return res.status(401).json({success: false, message: "User already exist"})
         }
 
         const hashPassword = await bcrypt.hash(password,10);
+        const lastMember = await User.findOne().sort({ numericId: -1 });
+        const nextId = lastMember ? lastMember.numericId + 1 : 1;
 
         const newUser = new User({
-            firstname,lastname,email,password: hashPassword, role: ROLES.MEMBER
+            firstname,lastname,email,password: hashPassword, education, work, address, numericId: nextId,  role: ROLES.MEMBER
         })
 
         await newUser.save();

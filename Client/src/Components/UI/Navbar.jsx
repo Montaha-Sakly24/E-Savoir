@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { alpha, styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import {
   AppBar, Toolbar, Box, Button, IconButton, Container,
   Divider, MenuItem, Drawer, Menu
@@ -16,18 +16,17 @@ import { useAuth } from '../../context/ContextProvider';
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/Logo.png';
 
+
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
   flexShrink: 0,
   borderRadius: `calc(${theme.shape.borderRadius}px + 8px)`,
-  backdropFilter: 'blur(24px)',
+  backdropFilter: 'blur(4px)',
   border: '1px solid',
   borderColor: (theme.vars || theme).palette.divider,
-  backgroundColor: theme.vars
-    ? `rgba(${theme.vars.palette.background.defaultChannel} / 0.4)`
-    : alpha(theme.palette.background.default, 0.4),
+  backgroundColor: 'white',
   boxShadow: (theme.vars || theme).shadows[1],
   padding: '8px 12px',
 }));
@@ -51,14 +50,13 @@ const Navbar = () => {
 
   return (
     <AppBar
-      position="fixed"
-      enableColorOnDark
+     position="fixed"
       sx={{
         boxShadow: 0,
         bgcolor: 'transparent',
-        backgroundImage: 'none',
         mt: 'calc(var(--template-frame-height, 0px) + 28px)',
       }}
+      
     >
       <Container maxWidth="lg">
         <StyledToolbar variant="dense" disableGutters>
@@ -77,6 +75,7 @@ const Navbar = () => {
                 <Button component={Link} to={`/member/my-articles`} color="info" size="small">
                   My Articles
                 </Button>
+                
               ) : (
                 <Button color="info" size="small">About</Button>
               )}
@@ -104,19 +103,19 @@ const Navbar = () => {
                 size="small"
                 startIcon={<EditIcon />}
                 component={Link}
-                to={`/${user.role}/write`}
+                to={`/member/articles/add`}
                 sx={{ mr: 1 }}
               >
                 Write
               </Button>
 
-                <IconButton color="inherit" sx={{ mr: 1 }}>
+                <IconButton color="primary" sx={{ mr: 1 }}>
                 <Badge color="error" variant="dot">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
 
-              <IconButton color="inherit" onClick={handleMenuOpen}>
+              <IconButton color="primary" onClick={handleMenuOpen}>
                 <AccountCircle />
               </IconButton>
                 <Menu
@@ -151,10 +150,8 @@ const Navbar = () => {
                   <CloseRoundedIcon />
                 </IconButton>
               </Box>
-              <MenuItem component={Link} to="/">Home</MenuItem>
-              <MenuItem>Features</MenuItem>
-              <MenuItem>Highlights</MenuItem>
-              <MenuItem>FAQ</MenuItem>
+              <MenuItem component={Link} to="/member/home">Home</MenuItem>
+              <MenuItem component={Link} to={`/member/my-articles`}>My Articles</MenuItem>
               <Divider sx={{ my: 2 }} />
               {!isAuthenticated ? (
                 <>
@@ -171,12 +168,10 @@ const Navbar = () => {
                     <EditNoteIcon />
                   </IconButton>
 
-                  {/* Notifications */}
                   <IconButton color="inherit" title="Notifications">
                     <NotificationsIcon />
                   </IconButton>
 
-                  {/* Profil */}
                   <IconButton color="inherit" onClick={handleMenuOpen}>
                     <AccountCircle />
                   </IconButton>

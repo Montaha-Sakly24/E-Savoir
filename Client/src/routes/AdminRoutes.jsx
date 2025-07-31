@@ -7,7 +7,7 @@ import Categories from '../Pages/admin/CategoryList';
 import Articles from '../Pages/admin/ArticleList';
 import ArticleDetailsPage from '../Components/Article/ArticleDetailsPage';
 import Notifications from '../Pages/admin/NotificationList';
-import Profile from '../Pages/admin/Profile';
+import Profile from '../Pages/public/Profile';
 
 
 const AdminRoutes = () => {

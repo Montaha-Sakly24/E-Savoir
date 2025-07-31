@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Box, Typography, Button, Divider, Avatar, Chip, Stack, Grid
+  Paper, Box, Typography, Button, Divider, Avatar, Chip, Stack, Grid
 } from '@mui/material';
 import { Alert } from '@mui/material';
 import { FaHeart, FaComment } from 'react-icons/fa';
@@ -70,8 +70,18 @@ const userId = user?._id || user?.id;
 
   return (
     
-    <Box sx={{ maxWidth: 1000, mx: 'auto', py: 4, px: 2 }}>
-
+    <Paper
+      elevation={3}
+      sx={{
+        maxWidth: 1150,
+        mx: 'auto',
+        my: 2,
+        p: 6,
+        borderRadius: 3,
+        boxShadow: 4,
+        overflow: 'hidden',
+      }}
+    >
       <Box display="flex" justifyContent="space-between" alignItems="center" pb={1} mb={2} borderBottom={1} borderColor="black">
         <Typography variant="subtitle1" >
             {article.categoryId?.title}
@@ -107,7 +117,7 @@ const userId = user?._id || user?.id;
         </Box>
       )}
 
-      <Typography variant="h4" fontWeight="bold" align="center" my={3}>
+      <Typography variant="h4" fontWeight="bold" align="center" my={3} sx={{ wordBreak: 'break-word', whiteSpace: 'normal' }} >
         {article.title}
       </Typography>
 
@@ -125,7 +135,11 @@ const userId = user?._id || user?.id;
         </Grid>
         <Grid >
           <Typography variant="body2" color="text.secondary">
-            {new Date(article.createdAt).toLocaleDateString()}
+            {new Date(article.createdAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
           </Typography>
         </Grid>
       </Grid>
@@ -175,10 +189,8 @@ const userId = user?._id || user?.id;
         color="black"
         sx={{
           my: 4,
-          maxHeight: 120,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
           whiteSpace: 'pre-line',
+          wordBreak: 'break-word',
         }}
       >
         {article.content}
@@ -214,7 +226,7 @@ const userId = user?._id || user?.id;
       </Box>
     )}
 
-    </Box>
+    </Paper>
   );
 };
 

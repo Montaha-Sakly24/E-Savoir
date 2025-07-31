@@ -26,6 +26,8 @@ const CategoryModal = ({
   const isEditMode = !!currentCategory && !readOnly;
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [errors, setErrors] = useState({});
+
 
   useEffect(() => {
     if (currentCategory) {
@@ -43,12 +45,36 @@ const CategoryModal = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+
+    if (!title.trim()) {
+      newErrors.title = 'The title field is required.';
+    } else if (title.trim().length > 50) {
+      newErrors.title = 'The title must not exceed 50 characters.';
+    }
+
+    if (!description.trim()) {
+      newErrors.description = 'The description field is required.';
+    } else if (description.trim().length > 300) {
+      newErrors.description = 'The description must not exceed 300 characters.';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+
     if (isEditMode) {
-      editCategory(currentCategory._id, title, description);
+      editCategory(currentCategory._id, title.trim(), description.trim());
     } else {
-      addCategory(title, description);
+      addCategory(title.trim(), description.trim());
     }
   };
+
+
 
   return (
     <Dialog
@@ -92,8 +118,14 @@ const CategoryModal = ({
             label="Title"
             fullWidth
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              setErrors((prevErrors) => ({ ...prevErrors, title: '' })); 
+            }}
             disabled={readOnly}
+            error={!!errors.title}
+            helperText={errors.title}
+            
           />
           <TextField
             label="Description"
@@ -101,8 +133,13 @@ const CategoryModal = ({
             minRows={4}
             fullWidth
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+              setErrors((prevErrors) => ({ ...prevErrors, description: '' }));
+            }}
             disabled={readOnly}
+            error={!!errors.description}
+            helperText={errors.description}
           />
         </Box>
       </DialogContent>
